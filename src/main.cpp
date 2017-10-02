@@ -32,6 +32,9 @@ public:
 	// Data necessary to give our triangle to OpenGL
 	GLuint VertexBufferID;
 
+	GLuint OtherVertexArrayID;
+	GLuint OtherVertexBufferID;
+
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
 	{
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -101,6 +104,26 @@ public:
 
 		glBindVertexArray(0);
 
+
+		glGenVertexArrays(1, &OtherVertexArrayID);
+		glBindVertexArray(OtherVertexArrayID);
+		glGenBuffers(1, &OtherVertexBufferID);
+		glBindBuffer(GL_ARRAY_BUFFER, OtherVertexBufferID);
+
+		static const GLfloat g_other_vertex_buffer_data[] =
+		{
+			-0.5f, -0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			0.0f, 0.7f, 0.0f,
+
+			0.9f, 0.7f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			0.0f, 0.7f, 0.0f,
+		};
+		glBufferData(GL_ARRAY_BUFFER, sizeof(g_other_vertex_buffer_data), g_other_vertex_buffer_data, GL_DYNAMIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+		glBindVertexArray(0);
 	}
 
 	//General OGL initialization - set OGL state here
@@ -181,7 +204,9 @@ public:
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		prog->unbind();
 
-		// Second triangle
+		glBindVertexArray(OtherVertexArrayID);
+
+		// a rhombus
 		otherProg->bind();
 		glUniformMatrix4fv(otherProg->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 		glUniformMatrix4fv(otherProg->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
@@ -189,7 +214,7 @@ public:
 		glUniform1f(otherProg->getUniform("uTime"), (float) glfwGetTime() + 3.1415f / 2.f);
 		glUniform3f(otherProg->getUniform("uColor"), 0.15f, 0.48f, 0.29f);
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 		otherProg->unbind();
 
 
