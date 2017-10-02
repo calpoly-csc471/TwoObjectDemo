@@ -119,6 +119,7 @@ public:
 		prog->init();
 		prog->addUniform("P");
 		prog->addUniform("MV");
+		prog->addUniform("uTime");
 		prog->addAttribute("vertPos");
 	}
 
@@ -160,6 +161,7 @@ public:
 		//send the matrices to the shaders
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 		glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+		glUniform1f(prog->getUniform("uTime"), (float) glfwGetTime());
 
 		glBindVertexArray(VertexArrayID);
 
