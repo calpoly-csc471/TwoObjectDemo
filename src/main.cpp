@@ -120,6 +120,7 @@ public:
 		prog->addUniform("P");
 		prog->addUniform("MV");
 		prog->addUniform("uTime");
+		prog->addUniform("uColor");
 		prog->addAttribute("vertPos");
 	}
 
@@ -162,6 +163,7 @@ public:
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 		glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 		glUniform1f(prog->getUniform("uTime"), (float) glfwGetTime());
+		glUniform3f(prog->getUniform("uColor"), 0.15f, 0.33f, 0.42f);
 
 		glBindVertexArray(VertexArrayID);
 
