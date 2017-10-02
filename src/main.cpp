@@ -162,12 +162,18 @@ public:
 		//send the matrices to the shaders
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 		glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+
 		glUniform1f(prog->getUniform("uTime"), (float) glfwGetTime());
 		glUniform3f(prog->getUniform("uColor"), 0.15f, 0.33f, 0.42f);
 
 		glBindVertexArray(VertexArrayID);
 
 		//actually draw from vertex 0, 3 vertices
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glUniform1f(prog->getUniform("uTime"), (float) glfwGetTime() + 3.1415f / 2.f);
+		glUniform3f(prog->getUniform("uColor"), 0.15f, 0.48f, 0.29f);
+
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glBindVertexArray(0);
