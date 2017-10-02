@@ -11,7 +11,7 @@ void main()
 {
 	vec3 position = vertPos;
 
-	const float radius = 0.2;
+	const float radius = 0.8;
 	position.xy += vec2(cos(uTime), sin(uTime)) * radius;
 
 	gl_Position = P * MV * vec4(position, 1.0);
