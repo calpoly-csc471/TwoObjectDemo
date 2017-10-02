@@ -6,9 +6,12 @@ uniform mat4 P;
 uniform mat4 MV;
 uniform float uTime;
 
+out vec2 fVertPos;
+
 
 void main()
 {
+	fVertPos = vertPos.xy;
 	vec3 position = vertPos;
 
 	const float radius = 0.8;
