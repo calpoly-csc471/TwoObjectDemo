@@ -24,6 +24,7 @@ public:
 
 	// Our shader program
 	std::shared_ptr<Program> prog;
+	std::shared_ptr<Program> otherProg;
 
 	// Contains vertex information for OpenGL
 	GLuint VertexArrayID;
@@ -122,6 +123,17 @@ public:
 		prog->addUniform("uTime");
 		prog->addUniform("uColor");
 		prog->addAttribute("vertPos");
+
+		// Initialize the GLSL program.
+		otherProg = std::make_shared<Program>();
+		otherProg->setVerbose(true);
+		otherProg->setShaderNames(resourceDirectory + "/fancy_vert33.glsl", resourceDirectory + "/fancy_frag33.glsl");
+		otherProg->init();
+		otherProg->addUniform("P");
+		otherProg->addUniform("MV");
+		otherProg->addUniform("uTime");
+		otherProg->addUniform("uColor");
+		otherProg->addAttribute("vertPos");
 	}
 
 
@@ -156,29 +168,33 @@ public:
 		}
 		MV->pushMatrix();
 
-		// Draw the triangle using GLSL.
-		prog->bind();
+		glBindVertexArray(VertexArrayID);
 
-		//send the matrices to the shaders
+		// First triangle
+		prog->bind();
 		glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 		glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 
 		glUniform1f(prog->getUniform("uTime"), (float) glfwGetTime());
 		glUniform3f(prog->getUniform("uColor"), 0.15f, 0.33f, 0.42f);
 
-		glBindVertexArray(VertexArrayID);
-
-		//actually draw from vertex 0, 3 vertices
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+		prog->unbind();
 
-		glUniform1f(prog->getUniform("uTime"), (float) glfwGetTime() + 3.1415f / 2.f);
-		glUniform3f(prog->getUniform("uColor"), 0.15f, 0.48f, 0.29f);
+		// Second triangle
+		otherProg->bind();
+		glUniformMatrix4fv(otherProg->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
+		glUniformMatrix4fv(otherProg->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+
+		glUniform1f(otherProg->getUniform("uTime"), (float) glfwGetTime() + 3.1415f / 2.f);
+		glUniform3f(otherProg->getUniform("uColor"), 0.15f, 0.48f, 0.29f);
 
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+		otherProg->unbind();
+
 
 		glBindVertexArray(0);
 
-		prog->unbind();
 
 		// Pop matrix stacks.
 		MV->popMatrix();
